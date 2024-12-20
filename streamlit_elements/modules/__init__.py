@@ -5,7 +5,7 @@ from streamlit_elements.modules.events import Events
 from streamlit_elements.modules.html import HTML
 from streamlit_elements.modules.media import Media
 from streamlit_elements.modules.mui import MUI
-from streamlit_elements.modules.nivo import Nivo
+from streamlit_elements.modules.plotly import Plotly
 
 __all__ = [
     "dashboard",
@@ -15,7 +15,7 @@ __all__ = [
     "lazy",
     "media",
     "mui",
-    "nivo",
+    "plotly",
     "partial",
     "sync",
 ]
@@ -27,4 +27,4 @@ event = Events()
 html = HTML()
 media = Media()
 mui = MUI()
-nivo = Nivo()
+nivo = Plotly()

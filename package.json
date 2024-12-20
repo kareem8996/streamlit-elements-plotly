@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "dequal": "^2.0.3",
+    "next": "^15.1.2",
+    "plotly.js": "^2.35.3",
+    "react-error-boundary": "^4.1.2",
+    "react-plotly.js": "^2.6.0",
+    "streamlit-component-lib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/mousetrap": "^1.6.15",
+    "@types/react-plotly.js": "^2.6.3"
+  }
+}
