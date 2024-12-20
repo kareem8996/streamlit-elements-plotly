@@ -7,8 +7,8 @@
     "start": "next start",
     "lint": "next lint",
     "build-public": "npm run copy-monaco && npm run del-source-maps",
-    "del-source-maps": "find public -name '*.js' | xargs sed -i '/sourceMappingURL/d'",
-    "copy-monaco": "mkdir -p public/monaco && rm -rf public/monaco/vs && cp -r node_modules/monaco-editor/min/vs public/monaco/vs"
+    "del-source-maps": "powershell -Command \"Get-ChildItem -Recurse -Filter *.js -Path public | ForEach-Object { (Get-Content $_.FullName) -replace 'sourceMappingURL.*', '' | Set-Content $_.FullName }\"",
+    "copy-monaco": "if not exist public\\monaco mkdir public\\monaco && rmdir /s /q public\\monaco\\vs && xcopy node_modules\\monaco-editor\\min\\vs public\\monaco\\vs /E /I"
   },
   "dependencies": {
     "@emotion/react": "^11.8.2",
