@@ -3,9 +3,10 @@ import type { ComponentType } from "react";
 import type { PlotParams } from "react-plotly.js";
 import ElementsLoading from "../../ElementsLoading";
 
-const Plot = dynamic(() => import("react-plotly.js") as any, {
-  loading: ElementsLoading,
-  ssr: false,
-});
+const elements: ElementsRecord = {
+  Plot : dynamic(() => import("react-plotly.js").then((m) => m as unknown as ComponentType<PlotParams>), {loading: ElementsLoading, ssr: false})
+}
 
-export default Plot;
+const loadPlotly: ElementsLoader = element => elements[element]
+
+export default loadPlotly
