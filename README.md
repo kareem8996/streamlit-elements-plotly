@@ -5,7 +5,7 @@ One day while working on my bachelor graduation project (called C.A.S.E you can 
 This is an extension on a library created by okld, The purpose of this extension is to add Plotly capabilities to the already amazing feautures provided. Previously, the charts were created by Nivo, which is a great React chart library, but compared to Plotly it lacks many plots and features.
 This has been a much requested functionality so enjoy!
 
-All below
+All below are the same as okld's Streamlit Elements except the Plotly part.
 
 Demo
 ----
