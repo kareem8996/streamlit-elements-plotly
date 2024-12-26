@@ -1,7 +1,11 @@
-✨ Streamlit Elements &nbsp; [![GitHub][github_badge]][github_link] [![PyPI][pypi_badge]][pypi_link]
+✨ Streamlit Elements with Plotly &nbsp; [![GitHub][github_badge]][github_link] [![PyPI][pypi_badge]][pypi_link]
 =====================
+One day while working on my bachelor graduation project (called C.A.S.E you can find it in my Repos), I wanted to use the streamlit-elements to create a dashboard for my automated analysis functionality. However, I discovered that this library only supports Nivo charts. What a BUMMER! As a huge advocate for plotly, this was a huge inconvenience, but I am someone who doesn't take no for an answer. That is WHY this repository exists.
 
-Create a draggable and resizable dashboard in Streamlit, featuring Material UI widgets, Monaco editor (Visual Studio Code), Nivo charts, and more!
+This is an extension on a library created by okld, The purpose of this extension is to add Plotly capabilities to the already amazing feautures provided. Previously, the charts were created by Nivo, which is a great React chart library, but compared to Plotly it lacks many plots and features.
+This has been a much requested functionality so enjoy!
+
+All below
 
 Demo
 ----
@@ -9,6 +13,10 @@ Demo
 [![Open in Streamlit][share_badge]][share_link]
 
 [![Preview][share_video]][share_link]
+
+To create something like this go to: [share_link]
+
+Go to source repository and change Nivo with Plotly as shown below in section 5.2
 
 [share_badge]: https://static.streamlit.io/badges/streamlit_badge_black_white.svg
 [share_link]: https://share.streamlit.io/okld/streamlit-gallery/main?p=elements
@@ -32,10 +40,8 @@ It also includes a feature to create draggable and resizable dashboards.
 #### Installation
 
 ```sh
-pip install streamlit-elements==0.1.*
+pip install git+https://github.com/kareem8996/streamlit-elements-plotly
 ```
-
-**Caution**: It is recommended to pin the version to `0.1.*`. Future versions might introduce breaking API changes.
 
 #### Available elements and objects
 
@@ -48,7 +54,7 @@ dashboard | Build a draggable and resizable dashboard.
 mui       | Material UI (MUI) widgets and icons.
 html      | HTML objects.
 editor    | Monaco code and diff editor that powers Visual Studio Code.
-nivo      | Nivo chart library.
+plotly      | plotly chart library.
 media     | Media player.
 sync      | Callback to synchronize Streamlit's session state with elements events data.
 lazy      | Defer a callback call until another non-lazy callback is called.
@@ -538,71 +544,66 @@ with elements("monaco_editors"):
 
 ---
 
-#### 5.2. Nivo charts
-
+#### 5.2. Plotly charts
+I have made it very easy to use the plotly, you can create whatever plot you want using plotly.express ONLY, someone can expand this and try to use plotly graph objects.
+Simply all you need to do is after creating the plotly figure (fig), pass to plotly.Plot(data=fig.data,layout=fig.layout)
+Additionally you can pass config to Plot too!
 ```python
-with elements("nivo_charts"):
+from streamlit_elements import plotly
+    def make_serializable(obj):
+        # Function that transforms numpy types to normal python types due to JSON not accepting numpy types . You can copy and paste this function
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, dict):
+            return {key: make_serializable(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [make_serializable(item) for item in obj]
+        else:
+            return obj
 
-    # Streamlit Elements includes 45 dataviz components powered by Nivo.
-
-    from streamlit_elements import nivo
-
-    DATA = [
-        { "taste": "fruity", "chardonay": 93, "carmenere": 61, "syrah": 114 },
-        { "taste": "bitter", "chardonay": 91, "carmenere": 37, "syrah": 72 },
-        { "taste": "heavy", "chardonay": 56, "carmenere": 95, "syrah": 99 },
-        { "taste": "strong", "chardonay": 64, "carmenere": 90, "syrah": 30 },
-        { "taste": "sunny", "chardonay": 119, "carmenere": 94, "syrah": 103 },
-    ]
-
-    with mui.Box(sx={"height": 500}):
-        nivo.Radar(
-            data=DATA,
-            keys=[ "chardonay", "carmenere", "syrah" ],
-            indexBy="taste",
-            valueFormat=">-.2f",
-            margin={ "top": 70, "right": 80, "bottom": 40, "left": 80 },
-            borderColor={ "from": "color" },
-            gridLabelOffset=36,
-            dotSize=10,
-            dotColor={ "theme": "background" },
-            dotBorderWidth=2,
-            motionConfig="wobbly",
-            legends=[
-                {
-                    "anchor": "top-left",
-                    "direction": "column",
-                    "translateX": -50,
-                    "translateY": -40,
-                    "itemWidth": 80,
-                    "itemHeight": 20,
-                    "itemTextColor": "#999",
-                    "symbolSize": 12,
-                    "symbolShape": "circle",
-                    "effects": [
-                        {
-                            "on": "hover",
-                            "style": {
-                                "itemTextColor": "#000"
-                            }
-                        }
-                    ]
-                }
-            ],
-            theme={
-                "background": "#FFFFFF",
-                "textColor": "#31333F",
-                "tooltip": {
-                    "container": {
-                        "background": "#FFFFFF",
-                        "color": "#31333F",
-                    }
-                }
+def dynamic_color_map(df, column_name):
+        unique_values = df[column_name].unique()
+        colors = px.colors.qualitative.Set1  # You can choose any color palette
+        color_map = {value: colors[i % len(colors)] for i, value in enumerate(unique_values)}
+        return color_map
+ data = {
+                'Fruit': ['Apple', 'Banana', 'Orange', 'Grape', 'Mango', 'Apple', 'Banana', 'Orange', 'Mango'],
+                'Sweetness': [7, 9, 6, 8, 10, 6, 8, 7, 9],
             }
-        )
+df = pd.DataFrame(data)
+
+# If you are facing issues with colors try to use a defined colormap like this
+color_map = dynamic_color_map(df, 'Fruit')
+
+    fig = px.scatter(df, x='Fruit', y='Sweetness', color='Fruit', title="Sweetness of Different Fruits", color_discrete_map=color_map)
+
+    fig.update_layout(
+                title='Wine Tastes Comparison',
+                xaxis={'title': 'Taste'},
+                yaxis={'title': 'Wine Intensity'},
+                showlegend=True
+            )
+    fig_dict = fig.to_dict()
+    fig_dict['data'] = make_serializable(fig_dict['data']) # Read function description on why we use this
+    fig_dict['layout'] = make_serializable(fig_dict['layout']) # Read function description on why we use this
+
+with elements("plotly_charts"):
+    with mui.Box(sx={"height": 500}):
+        plotly.Plot(data=fig_dict['data'], layout=fig_dict['layout'],
+                                        config={
+                                        'displayModeBar': True,
+                                        'scrollZoom': True,
+                                        'displaylogo': True,
+                                        'editable': True,
+                                        'showLink': False,
+                                        'modeBarButtonsToRemove': ['zoom', 'resetScale'],
+                                        'responsive': True,
+                                    },) # Config parameters are optioinal but responsive=True is advised
 ```
-- Nivo charts: https://nivo.rocks/
-- Github page: https://github.com/plouc/nivo
 
 ---
 
